@@ -23,13 +23,17 @@ import {
 } from '@/components/ui/select';
 import { useRouter } from 'next/navigation';
 import useWallet from '@/hooks/useWallet';
+import useAuth from '@/hooks/useAuth';
+import { RegisterRequest } from '@/services/authService';
+import { Loader2 } from 'lucide-react';
 
 const LinkWallet: React.FC = () => {
   const router = useRouter();
   const { formData, nextStep, updateFormData, prevStep } = useFormStore();
   const { step } = useFormStore();
-  const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const { SignUpMutation } = useAuth();
+  const signUpMutation = SignUpMutation();
   const { GetWalletProvider } = useWallet();
   const [walletProvider, setWalletProvider] = useState<string | null>(null);
   const { data, isLoading, isError, error } = GetWalletProvider();
@@ -65,10 +69,21 @@ const LinkWallet: React.FC = () => {
     }
   }, [data, isError, error]);
 
+  const registrationData: RegisterRequest = {
+    ...formData.basicInfo,
+    BVN: formData.bvnVerification.bvn,
+    walletProviderId: formData.linkWallet.walletProvider,
+    email: formData.basicInfo.email,
+    password: formData.basicInfo.password,
+    userType: formData.basicInfo.userType,
+    BvnDateOfBirth: formData.basicInfo.BvnDateOfBirth,
+  };
+
+  const Loading = signUpMutation.isPending;
+
   const handleWalletSubmit: SubmitHandler<WalletFormValues> = async (
     formData,
   ) => {
-    setLoading(true);
     setFormError(null); // Clear previous errors
     try {
       const walletProviderId = formData.wallet;
@@ -81,12 +96,18 @@ const LinkWallet: React.FC = () => {
           walletProvider: walletProviderId,
         },
       });
-      nextStep();
+      const mutationResult = await signUpMutation.mutateAsync({
+        ...registrationData,
+        walletProviderId,
+      });
+
+      if (mutationResult.status === 'Success') {
+        nextStep();
+      }
     } catch (error) {
       console.error('Error updating form data:', error);
       setFormError('An error occurred. Please try again.');
     } finally {
-      setLoading(false);
     }
   };
 
@@ -222,9 +243,9 @@ const LinkWallet: React.FC = () => {
                     <Button
                       className="bg-blue-600 hover:bg-blue-800 w-full"
                       type="submit"
-                      disabled={loading}
+                      disabled={Loading}
                     >
-                      {loading ? 'Submitting...' : 'NEXT'}
+                      {Loading ? <Loader2 className="animate-spin" /> : 'NEXT'}
                     </Button>
                   </div>
                 </form>
