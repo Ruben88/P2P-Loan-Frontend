@@ -13,6 +13,28 @@ export const metadata: Metadata = {
   title: 'BorrowHub',
   description:
     "Peer-to-Peer (P2P) Microloan Platform that bridges the gap between borrower's and lenders",
+  icons: [
+    {
+      url: '/icons/favicon-32x32.png',
+      sizes: '32x32',
+    },
+    {
+      url: '/icons/favicon-16x16.png',
+      sizes: '16x16',
+    },
+    {
+      url: '/icons/apple-touch-icon.png',
+      sizes: '/blue-logo.svg',
+    },
+    {
+      url: '/icons/android-chrome-512x512.png',
+      sizes: '512x512',
+    },
+    {
+      url: '/icons/android-chrome-192x192.png',
+      sizes: '192x192',
+    },
+  ],
 };
 
 export default function RootLayout({
