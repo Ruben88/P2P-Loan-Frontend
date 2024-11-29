@@ -89,8 +89,8 @@ const VerifyEmailForm = () => {
         <div className="w-full max-w-md text-center">
           <h1 className="font-bold text-base mt-4">Verify Your Account</h1>
           <p className="mt-2 text-xs">
-            Your email address has been successfully updated. Please verify your
-            new email to secure your account.
+            Please confirm your email address to complete the verification
+            process and secure your account.
           </p>
         </div>
         <Form {...form}>
